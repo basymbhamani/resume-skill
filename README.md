@@ -26,23 +26,23 @@ Already required to run `compile_latex.py`.
 
 Skills must be installed as a **directory** containing a `SKILL.md` file inside `~/.claude/skills/`.
 
-1. Clone this repo:
+1. Clone this repo and navigate into it:
    ```bash
-   git clone <repo-url> ~/resume-skill
+   git clone <repo-url>
+   cd resume-skill
    ```
 
 2. Copy the skill directory into your global Claude skills directory:
    ```bash
-   cp -r ~/resume-skill/.claude/skills/tailor-resume ~/.claude/skills/
+   cp -r .claude/skills/tailor-resume ~/.claude/skills/
    ```
    Or into a specific project's `.claude/skills/` to scope it to that project:
    ```bash
-   cp -r ~/resume-skill/.claude/skills/tailor-resume /your/project/.claude/skills/
+   cp -r .claude/skills/tailor-resume /path/to/project/.claude/skills/
    ```
 
-3. Open Claude Code **in the repo directory** (where `default-resume.tex` lives):
+3. Open Claude Code:
    ```bash
-   cd ~/resume-skill
    claude
    ```
 
@@ -55,22 +55,54 @@ Claude will tailor the resume and compile `Jane-Doe-Google.pdf` in the current d
 
 ---
 
-## Install in Antigravity CLI
+## Install in Antigravity (CLI & IDE)
 
-1. Clone this repo:
+Antigravity automatically discovers skills structured as a directory containing a `SKILL.md` file.
+
+1. Clone this repo and navigate into it:
    ```bash
-   git clone <repo-url> ~/resume-skill
+   git clone <repo-url>
+   cd resume-skill
    ```
 
-2. Register the skill:
+2. Choose your installation scope:
+
+   - **Workspace-specific (Automatic)**:
+     This repository includes the skill under `.agents/skills/tailor-resume/`. When you open Antigravity inside this repository, the skill is automatically discovered and active—no copying needed.
+     *(To use in another workspace, copy `.agents/skills/tailor-resume/` into that project's `.agents/skills/` directory).*
+
+   - **Global for Antigravity CLI (`agy`)**:
+     ```bash
+     # macOS / Linux
+     cp -r .agents/skills/tailor-resume ~/.gemini/antigravity-cli/skills/
+
+     # Windows (PowerShell)
+     Copy-Item -Recurse .agents\skills\tailor-resume ~/.gemini/antigravity-cli/skills\
+     ```
+
+   - **Global for Antigravity 2.0 / IDE**:
+     ```bash
+     # macOS / Linux
+     cp -r .agents/skills/tailor-resume ~/.gemini/config/skills/
+
+     # Windows (PowerShell)
+     Copy-Item -Recurse .agents\skills\tailor-resume ~/.gemini/config/skills\
+     ```
+
+3. Open Antigravity:
    ```bash
-   antigravity skill install ~/resume-skill/antigravity/skill.yaml
+   agy
    ```
 
-3. Invoke it:
-   ```bash
-   antigravity tailor-resume "Software Engineer at Stripe. We use Go, gRPC, Postgres..."
-   ```
+4. Invoke the skill:
+   - Use the slash command in the interactive prompt:
+     ```
+     /tailor-resume Software Engineer at Google. Requirements: Go, distributed systems, Kubernetes, CI/CD...
+     ```
+   - Or ask the agent naturally:
+     ```
+     Tailor my resume for this job description: Software Engineer at Google...
+     ```
 
 ---
 
@@ -81,7 +113,7 @@ The skill tells the harness's model to:
 1. Read `default-resume.tex`
 2. Produce a tailored version matching the JD keywords (no fabrication — see rules below)
 3. Write it to a temp `_tailored_resume.tex`
-4. Run `python compile_latex.py _tailored_resume.tex "<Name> <Company>.pdf"`
+4. Run `python "<SKILL_BASE_DIR>/compile_latex.py" _tailored_resume.tex "<Name> <Company>.pdf"`
 5. Delete the temp file
 6. Report the output PDF path
 
@@ -111,6 +143,5 @@ No external API calls. The harness model does the tailoring natively.
 | File | Purpose |
 |------|---------|
 | `default-resume.tex` | Base resume template — never modified by the skill |
-| `compile_latex.py` | Compiles a `.tex` to PDF via `pdflatex` |
-| `.claude/skills/tailor-resume/SKILL.md` | Claude Code skill definition |
-| `antigravity/skill.yaml` | Antigravity CLI skill manifest |
+| `.claude/skills/tailor-resume/` | Claude Code skill bundle (`SKILL.md` & `compile_latex.py`) |
+| `.agents/skills/tailor-resume/` | Antigravity skill bundle (`SKILL.md` & `compile_latex.py`) |

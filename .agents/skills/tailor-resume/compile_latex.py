@@ -18,16 +18,14 @@ def main():
     output_dir = os.path.dirname(output_file)
     if not output_dir:
         output_dir = "."
-    
+
     # jobname is used by pdflatex to determine the output filename
     # it shouldn't contain the .pdf extension
     jobname = os.path.splitext(os.path.basename(output_file))[0]
 
     print(f"Compiling '{input_file}' to '{output_file}'...")
-    
-    # Run pdflatex
+
     try:
-        # We use pdflatex to compile the latex file into a PDF
         result = subprocess.run([
             "pdflatex",
             "-interaction=nonstopmode",
