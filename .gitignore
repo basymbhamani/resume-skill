@@ -1,0 +1,15 @@
+# Compiled PDFs
+*.pdf
+
+# Personal resume template (contains PII)
+default-resume.tex
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# Temp tailored resume
+_tailored_resume.tex

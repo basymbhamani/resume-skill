@@ -1,0 +1,68 @@
+name: tailor-resume
+version: "1.0.0"
+description: >
+  Tailors a LaTeX resume to a job description and compiles it to a PDF
+  named "<First> <Last> <Company>.pdf" without fabricating any experience.
+
+author: Basym Bhamani
+
+triggers:
+  - phrase: tailor-resume
+  - phrase: tailor resume
+  - phrase: update resume for
+
+parameters:
+  - name: jd
+    description: The full job description text (paste inline)
+    required: true
+    type: string
+
+instructions: |
+  Follow these steps exactly.
+
+  ## Step 1 — Read the base resume
+  Read the file `default-resume.tex` in the skill's root directory.
+
+  ## Step 2 — Tailor the LaTeX
+  Produce a modified version of the .tex that better matches the job description.
+
+  You MAY:
+  - Reorder bullet points within a role to surface the most relevant ones first
+  - Adjust phrasing or swap synonyms to match JD keywords where the experience genuinely supports it
+  - Add \textbf{} around tools/skills already in the resume that the JD emphasizes
+  - Reorder items in the Technical Skills section to lead with the JD's stack
+
+  You MUST NOT:
+  - Invent, fabricate, or add any experience, projects, roles, metrics, or dates not already in the resume
+  - Add new bullet points, new sections, or new projects
+  - Remove existing bullet points or sections
+  - Change the candidate's name, contact info, education institution, GPA, degree, or dates
+  - Alter the LaTeX preamble, document structure, or custom command definitions
+
+  ## Step 3 — Parse the company name
+  Extract the hiring company name from the job description. Remove filename-illegal characters (\ / * ? : " < > |).
+
+  ## Step 4 — Write the temp file
+  Write the tailored LaTeX to `_tailored_resume.tex` in the skill root directory.
+
+  ## Step 5 — Compile to PDF
+  Run:
+    python compile_latex.py _tailored_resume.tex "<First>-<Last>-<Company>.pdf"
+
+  Where <First> <Last> is the candidate's name from the resume and <Company> is the sanitized company name.
+
+  ## Step 6 — Delete the temp file
+  Delete `_tailored_resume.tex`.
+
+  ## Step 7 — Confirm
+  Tell the user the output PDF path and confirm default-resume.tex was not modified.
+
+requirements:
+  system:
+    - python3
+    - pdflatex
+
+notes: |
+  Ensure pdflatex is on PATH:
+  - macOS/Linux: TeX Live (e.g. `brew install --cask mactex` or `apt install texlive-full`)
+  - Windows: MiKTeX from https://miktex.org/download
