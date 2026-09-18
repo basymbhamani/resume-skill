@@ -50,6 +50,9 @@ Produce a modified version of the `.tex` file that better matches the job descri
 - Change the candidate's name, contact information, education institution, GPA, degree, or any dates
 - Alter the LaTeX preamble, document structure, or custom command definitions
 
+**One-page requirement:**
+The tailored resume MUST fit on exactly one page with nothing cut off. After writing `_tailored_resume.tex`, compile it and verify with `pdfinfo` that `Pages: 1`. If it spills to 2 pages, reduce the font size (e.g. `11pt` → `10pt` in `\documentclass`) and/or tighten vertical spacing (`\topmargin`, `\textheight`, `\vspace` values) until it fits — do not remove content.
+
 ### Step 3 — Parse the company name
 
 Extract the hiring company's name from the job description (the employer, not a recruiter or job board). Sanitize it: remove characters that are illegal in filenames (`\ / * ? : " < > |`).
@@ -62,10 +65,13 @@ Write the tailored LaTeX to a temporary file named `_tailored_resume.tex` in the
 
 Run:
 ```bash
-python compile_latex.py _tailored_resume.tex "<First>-<Last>-<Company>.pdf"
+python "<SKILL_BASE_DIR>/compile_latex.py" _tailored_resume.tex "<First>-<Last>-<Company>.pdf"
 ```
 
-Where `<First>` and `<Last>` are the candidate's name from the resume and `<Company>` is the sanitized company name from Step 3.
+Where:
+- `<SKILL_BASE_DIR>` is the base directory shown at the top of this skill (the `Base directory:` line in the invocation context — e.g. `C:\Users\you\.claude\skills\tailor-resume`)
+- `<First>` and `<Last>` are the candidate's name from the resume
+- `<Company>` is the sanitized company name from Step 3
 
 ### Step 6 — Delete the temp file
 
