@@ -1,6 +1,6 @@
 # resume-tailor
 
-A Claude Code and Antigravity skill that tailors your LaTeX resume to a job description and compiles it to a ready-to-send PDF — without fabricating experience.
+A Claude Code, OpenCode, and Antigravity skill that tailors your LaTeX resume to a job description and compiles it to a ready-to-send PDF — without fabricating experience.
 
 Given a job description, it:
 - Reorders and rephrases bullet points to surface the most relevant experience
@@ -106,6 +106,57 @@ Antigravity automatically discovers skills structured as a directory containing 
 
 ---
 
+## Install in OpenCode
+
+OpenCode discovers a skill as a directory containing a `SKILL.md` file. Install it globally at `~/.config/opencode/skills/`, or scope it to one project with `.opencode/skills/`. OpenCode also reads the Claude compatibility path, so the existing `.claude/skills/tailor-resume/` bundle works unchanged.
+
+1. Clone this repo and navigate into it:
+   ```bash
+   git clone <repo-url>
+   cd resume-skill
+   ```
+
+2. Copy the skill bundle into your global OpenCode skills directory:
+   ```bash
+   # macOS / Linux
+   cp -r .claude/skills/tailor-resume ~/.config/opencode/skills/
+
+   # Windows (PowerShell)
+   Copy-Item -Recurse .claude\skills\tailor-resume "$env:USERPROFILE\.config\opencode\skills\"
+   ```
+   For a single project instead, copy it into `<project>/.opencode/skills/`.
+
+3. Add the `/tailor-resume` slash command by creating `~/.config/opencode/commands/tailor-resume.md`:
+   ```md
+   ---
+   description: Tailor your LaTeX resume to a job description and compile a PDF
+   ---
+
+   Load the `tailor-resume` skill (use the skill tool with id `tailor-resume`) and follow its instructions exactly. Do not fabricate any experience.
+
+   Tailor the resume for this job description:
+
+   $ARGUMENTS
+   ```
+   For a single project instead, place it at `<project>/.opencode/commands/tailor-resume.md`.
+
+4. Invoke it from the OpenCode TUI:
+   ```
+   /tailor-resume Software Engineer at Google. Requirements: Go, distributed systems, Kubernetes, CI/CD...
+   ```
+
+OpenCode reloads skills and commands automatically, so no restart is required.
+
+> **Prefer not to copy?** Point OpenCode at the bundle directly in any `opencode.json`:
+> ```jsonc
+> {
+>   "$schema": "https://opencode.ai/config.json",
+>   "skills": ["~/Documents/Repos/resume-skill/.claude/skills"]
+> }
+> ```
+
+---
+
 ## How it works
 
 The skill tells the harness's model to:
@@ -143,5 +194,5 @@ No external API calls. The harness model does the tailoring natively.
 | File | Purpose |
 |------|---------|
 | `default-resume.tex` | Base resume template — never modified by the skill |
-| `.claude/skills/tailor-resume/` | Claude Code skill bundle (`SKILL.md` & `compile_latex.py`) |
+| `.claude/skills/tailor-resume/` | Claude Code & OpenCode skill bundle (`SKILL.md` & `compile_latex.py`) |
 | `.agents/skills/tailor-resume/` | Antigravity skill bundle (`SKILL.md` & `compile_latex.py`) |
